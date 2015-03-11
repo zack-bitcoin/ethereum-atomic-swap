@@ -7,6 +7,10 @@ macro verify_sign($hash, $addr, $signature):
 data channel[][](hash, expiration, amount)
 macro db():
     self.channel[addr1][addr2]
+macro db_cleanup():
+    db().hash=0
+    db().expiration=0
+    db().amount=0
 
 def spend(hash, addr1, addr2, expiration):#from 1 towards 2
     db().hash=hash
@@ -23,18 +27,18 @@ def team_claim(addr1, addr2, sig1:arr, sig2:arr, winner):
         send(addr1, db().amount)
     else:
         send(addr1, db().amount)
-    suicide
+    db_cleanup()
 
 def expired_claim(addr1, addr2):
     if db().expiration<block.number:
         return("fail")
     send(addr1, db().amount)
-    suicide
+    db_cleanup()
 
 def reveal_claim(addr1, addr2, reveal):
     h=db().hash
     if not sha3([reveal]:arr)==h:
         return("fail")
     send(addr2, db().amount)
-    suicide
-    log(5555)
+    db_cleanup()
+
