@@ -39,7 +39,7 @@ def team_claim(hash, sig1:arr, sig2:arr, winner):
     log(555)
 def expired_claim(hash):
     addr1=db().addr1
-    if db().expiration<block.number:
+    if db().expiration<block.timestamp:
         return("fail")
     send(addr1, db().amount)
     db_cleanup()
