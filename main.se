@@ -48,7 +48,7 @@ def expired_claim(hash):
     send(addr1, db().amount)
     db_cleanup()
 
-def reveal_claim(reveal):
+def reveal_claim(hash, reveal):
     addr2=db().addr2
     if not sha256([reveal]:arr)==h:
         return("fail")

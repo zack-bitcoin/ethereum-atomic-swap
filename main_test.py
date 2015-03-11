@@ -27,7 +27,7 @@ def test(c):
     sig2=mk_sig(h, accs[1]["priv"])
     print("h: " +str(int(h, 16)))
     c.spend(secret_hash, accs[0]["addr"], accs[1]["addr"], sig1, sig2, expiration)
-    c.reveal_claim(27)
+    c.reveal_claim(27, secret_hash)
     
 def test_team(c):
     h=hash_list([secret_hash, expiration])
