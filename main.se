@@ -37,8 +37,8 @@ def expired_claim(addr1, addr2):
 
 def reveal_claim(addr1, addr2, reveal):
     h=db().hash
-    if not sha3([reveal]:arr)==h:
+    if not sha256([reveal]:arr)==h:
         return("fail")
     send(addr2, db().amount)
     db_cleanup()
-
+    log(555)
