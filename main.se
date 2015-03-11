@@ -9,27 +9,21 @@ macro db():
     self.channel[addr1][addr2]
 
 def spend(hash, addr1, addr2, expiration):#from 1 towards 2
-    log(2222)
-    log(hash)
     db().hash=hash
     db().expiration=expiration
     db().amount=msg.value
 
 def team_claim(addr1, addr2, sig1:arr, sig2:arr, winner):
     hash=db().hash
-    log(12222)
     if not verify_sign(hash, addr1, sig1):
-        log(112)
         return("fail")
     if not verify_sign(hash+winner, addr2, sig2):
-        log(113)
         return("fail")
     if winner:
         send(addr1, db().amount)
     else:
         send(addr1, db().amount)
     suicide
-    log(12234)
 
 def expired_claim(addr1, addr2):
     if db().expiration<block.number:
