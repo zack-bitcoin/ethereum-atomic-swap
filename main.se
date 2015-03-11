@@ -13,15 +13,10 @@ macro db_cleanup():
     db().expiration=0
     db().amount=0
 
-def spend(hash, addr1, addr2, sig1:arr, sig2:arr, expiration):#from 1 towards 2
-    h=sha256([hash, expiration]:arr)
-    log(h)
-    if not verify_sign(h, addr1, sig1):
+def spend(hash, addr1, addr2, expiration):#from 1 towards 2
+    if db().addr2:#wait until cleanup to start a new spend.
         return("fail")
-    if not verify_sign(h, addr2, sig2):
-        return("fail")
-    if not db().addr2:#wait until cleanup to start a new spend.
-        return("fail")
+    #db().addr1=msg.sender#in testing environment, addr is "tester", there is no cooresponding pubkey or privkey.
     db().addr1=addr1
     db().addr2=addr2
     db().expiration=expiration
@@ -29,9 +24,10 @@ def spend(hash, addr1, addr2, sig1:arr, sig2:arr, expiration):#from 1 towards 2
     log(55555)
 
 def team_claim(hash, sig1:arr, sig2:arr, winner):
+    h=sha256([hash, db().expiration]:arr)
     addr1=db().addr1
     addr2=db().addr2
-    if not verify_sign(hash, addr1, sig1):
+    if not verify_sign(h, addr1, sig1):
         return("fail")
     if not verify_sign(hash+winner, addr2, sig2):
         return("fail")
@@ -40,7 +36,7 @@ def team_claim(hash, sig1:arr, sig2:arr, winner):
     else:
         send(addr1, db().amount)
     db_cleanup()
-
+    log(555)
 def expired_claim(hash):
     addr1=db().addr1
     if db().expiration<block.number:
@@ -49,8 +45,9 @@ def expired_claim(hash):
     db_cleanup()
 
 def reveal_claim(hash, reveal):
+    h=sha256([hash, expiration]:arr)
     addr2=db().addr2
-    if not sha256([reveal]:arr)==h:
+    if sha256([reveal]:arr) != hash:
         return("fail")
     send(addr2, db().amount)
     db_cleanup()
